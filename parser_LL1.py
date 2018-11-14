@@ -9,12 +9,15 @@ class production:
     def __repr__(self):
         return 'left:{0.left}, right:{0.right}'.format(self)
 
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+    def __hash__(self):
+        return hash((self.left, self.right))
+
 
 class LL1:
     def __init__(self):
-        self.VT = set()  # 终结符 terminal
-        self.VN = set()  # 非终结符 nonterminal
-        # self.prods = defaultdict(set)
         self.prods = []
         self.start_symbol = None
         self.selects = {}
@@ -39,7 +42,8 @@ class LL1:
         with open(file) as f:
             for line in f:
                 self.add_production(line)
-        f.close()
+        f.close()    # def __eq__(self, other):
+    #     return self.__dict__ == other.__dict__
 
     def _first(self, rhs):  # calculate first set
         res = set()
@@ -79,10 +83,10 @@ class LL1:
                 if pos == len(pd.right) - 1:  # β is None
                     if lhs != pd.left:
                         res = res.union(self._follow(pd.left))
-                elif self._is_none(pd.right[pos + 1:]):
+                elif self._is_none(pd.right[pos + 1:]):  # β can be None
                     res = res.union(self._follow(pd.left))
                 else:
-                    res = res.union(self._first(pd.right[pos + 1:]))
+                    res = res.union(self._first(pd.right[pos + 1:]))  # β can't be None
         return res
 
     def _select(self, prod):
@@ -104,12 +108,12 @@ class LL1:
         pos = 0
         while len(self.ana_stack) > 0:
             top = self.ana_stack[-1]  # the top element
-            print('TOP', top)
+            print('STACK:', self.ana_stack, 'TOP:', top)
             if top == sentence[pos]:
                 self.ana_stack.pop()
                 pos += 1
             elif (top, sentence[pos]) not in self.ana_table:
-                print('False')
+                print('Not Accepted!')
                 return
             else:  # find in ana_table
                 if self.ana_table[(top, sentence[pos])] == '~':
@@ -120,23 +124,20 @@ class LL1:
                     for item in self.ana_table[(
                             top, sentence[pos])][::-1]:
                         self.ana_stack.append(item)
-        print('True')
+        print('Accepted!')
 
     def run(self):
         for pd in self.prods:
             self.selects[pd] = self._select(pd)
         self.gen_ana_table()
-        #     self.follows[pd] = self._follow(pd.left)
-        # print(pd, self._first(pd))
 
 
 def main():
     parser = LL1()
-    parser.readin('parser.in')
+    parser.readin('parser2.in')
     parser.run()
-    # print(parser.selects)
-    # print(parser.ana_table)
-    parser.parse('bac')
+    print(parser.selects[production('Y', '~')])
+    parser.parse('(a+a)')
 
 
 if __name__ == '__main__':
