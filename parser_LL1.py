@@ -42,8 +42,7 @@ class LL1:
         with open(file) as f:
             for line in f:
                 self.add_production(line)
-        f.close()    # def __eq__(self, other):
-    #     return self.__dict__ == other.__dict__
+        f.close()
 
     def _first(self, rhs):  # calculate first set
         res = set()
