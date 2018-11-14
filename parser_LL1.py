@@ -83,10 +83,11 @@ class LL1:
                 if pos == len(pd.right) - 1:  # β is None
                     if lhs != pd.left:
                         res = res.union(self._follow(pd.left))
-                elif self._is_none(pd.right[pos + 1:]):  # β can be None
-                    res = res.union(self._follow(pd.left))
                 else:
-                    res = res.union(self._first(pd.right[pos + 1:]))  # β can't be None
+                    # β can't be None
+                    res = res.union(self._first(pd.right[pos + 1:]))
+                    if self._is_none(pd.right[pos + 1:]):  # β can be None
+                        res = res.union(self._follow(pd.left))
         return res
 
     def _select(self, prod):
@@ -99,6 +100,17 @@ class LL1:
         for pd, select in self.selects.items():
             for element in select:
                 self.ana_table[(pd.left, element)] = pd.right
+
+    def is_valid(self):
+        dic = {}
+        for prod, slct in self.selects.items():
+            if prod.left not in dic:
+                dic[prod.left] = slct
+            elif not (slct & dic[prod.left]):
+                dic[prod.left] = slct
+            else:
+                return False
+        return True
 
     def parse(self, sentence):
         sentence = sentence + '#'
@@ -130,14 +142,17 @@ class LL1:
         for pd in self.prods:
             self.selects[pd] = self._select(pd)
         self.gen_ana_table()
+        if self.is_valid():
+            print('This grammar is valid for LL(1)')
+        else:
+            print('This grammar is not valid for LL(1)')
 
 
 def main():
     parser = LL1()
     parser.readin('parser2.in')
     parser.run()
-    print(parser.selects[production('Y', '~')])
-    parser.parse('(a+a)')
+    parser.parse('a*(a+a)')
 
 
 if __name__ == '__main__':
