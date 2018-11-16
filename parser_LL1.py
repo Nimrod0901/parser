@@ -24,9 +24,6 @@ class LL1:
         self.ana_table = {}
         self.ana_stack = []
 
-    def __repr__(self):
-        return 'VT:{0.VT}, VN.{0.VN}'.format(self)
-
     def add_production(self, prod):
         group = re.split("\s|->|\n|\|*", prod)
         left = group[0]  # left part 左部
@@ -49,11 +46,10 @@ class LL1:
         if rhs[0].isupper():
             for pd in self.prods:
                 if pd.left == rhs[0]:
-                    if pd.right == '~' and len(pd.right) == 1:
+                    if (pd.right == '~' and len(pd.right) == 1) or pd.right[0] == pd.left:
                         pass
-                    else:
+                    elif self._first(pd.right) is not None:
                         res = res.union(self._first(pd.right))
-
         elif rhs == '~' and len(rhs) == 1:
             pass
         else:  # is terminal
@@ -116,7 +112,8 @@ class LL1:
         self.ana_stack.append('#')
         self.ana_stack.append(self.start_symbol)
 
-        pos = 0
+        pos = 0else:
+                        res = res.union(self._first(pd.right))
         while len(self.ana_stack) > 0:
             top = self.ana_stack[-1]  # the top element
             print('STACK:', self.ana_stack, 'TOP:', top)
