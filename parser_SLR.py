@@ -228,7 +228,7 @@ class SLR:
 
 def main():
     parser = SLR()
-    parser.readin('parser.in')
+    parser.readin('example.in')
     parser.run()
     parser.parse('i*i-i')
     # print(parser.ana_table[(0, 'i')])

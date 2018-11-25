@@ -1,3 +1,0 @@
-E -> E+T|T|E-T
-T -> T*F|F|T/F
-F -> (E)|i

@@ -148,7 +148,7 @@ class LL1:
 
 def main():
     parser = LL1()
-    parser.readin('parser2.in')
+    parser.readin('example2.in')
     parser.run()
     parser.parse('a*(a+a)')
 
