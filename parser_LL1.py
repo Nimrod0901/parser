@@ -1,3 +1,5 @@
+# coding:utf-8
+
 import re
 
 
@@ -112,8 +114,8 @@ class LL1:
         self.ana_stack.append('#')
         self.ana_stack.append(self.start_symbol)
 
-        pos = 0else:
-                        res = res.union(self._first(pd.right))
+        pos = 0
+        
         while len(self.ana_stack) > 0:
             top = self.ana_stack[-1]  # the top element
             print('STACK:', self.ana_stack, 'TOP:', top)
