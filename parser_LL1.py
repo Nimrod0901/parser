@@ -3,7 +3,7 @@
 import re
 
 
-class production:
+class Production:
     def __init__(self, left, right):
         self.left = left
         self.right = right
@@ -35,7 +35,7 @@ class LL1:
         right = set(group[1:-1])
         right.remove('')  # right part 右部
         for item in right:
-            self.prods.append(production(left, item))
+            self.prods.append(Production(left, item))
 
     def readin(self, file):
         with open(file) as f:
@@ -63,7 +63,7 @@ class LL1:
             return True
         if rhs.isupper():
             for nt in rhs:
-                if production(nt, '~') not in self.prods:
+                if Production(nt, '~') not in self.prods:
                     return False
             return True
         return False
